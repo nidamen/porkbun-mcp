@@ -1,13 +1,26 @@
 {
   "name": "porkbun-mcp",
   "version": "0.1.0",
-  "description": "Local MCP server for authenticated Porkbun domain, DNS, and URL forwarding management.",
-  "private": true,
+  "description": "MCP server for managing Porkbun domains, DNS records, nameservers, and URL forwarding over stdio.",
   "bin": {
     "porkbun-mcp": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "WHITEPAPER.md",
+    "LICENSE"
+  ],
   "directories": {
     "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nidamen/porkbun-mcp.git"
+  },
+  "homepage": "https://github.com/nidamen/porkbun-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/nidamen/porkbun-mcp/issues"
   },
   "scripts": {
     "build": "tsc",
@@ -17,8 +30,17 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "porkbun",
+    "dns",
+    "domains",
+    "nameservers",
+    "url-forwarding",
+    "registrar"
+  ],
+  "author": "nidamen",
   "license": "MIT",
   "type": "module",
   "dependencies": {

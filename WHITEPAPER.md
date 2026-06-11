@@ -204,7 +204,7 @@ can do.
 MCP clients launch the server automatically. Manual invocation for testing:
 
 ```bash
-PORKBUN_API_KEY=<key> PORKBUN_API_SECRET=<secret> npx -y github:<your-handle>/porkbun-mcp
+PORKBUN_API_KEY=<key> PORKBUN_API_SECRET=<secret> npx -y github:nidamen/porkbun-mcp
 ```
 
 The server prints `Porkbun MCP server running on stdio` to stderr and waits for

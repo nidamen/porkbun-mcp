@@ -1,0 +1,12 @@
+{
+  "_comment": "The GitHub handle 'nidamen' is the PUBLIC publish identity for this open-source MCP: it is the install path (npx github:nidamen/porkbun-mcp), the repo/issue/homepage URLs, the package.json author, and the LICENSE copyright holder. These are intentional public-handle references, not owner PII leaks. We allow ONLY those exact handle-in-publish-metadata substrings so the sanity gate still blocks any real personal name, email, phone, path, key, or secret. This config file itself is excluded from scanning via allowFiles (it necessarily quotes the handle to define the allow list).",
+  "allow": [
+    "github:nidamen/porkbun-mcp",
+    "github.com/nidamen/porkbun-mcp",
+    "\"author\": \"nidamen\"",
+    "Copyright (c) 2026 nidamen"
+  ],
+  "allowFiles": [
+    ".sanity-patterns.json"
+  ]
+}

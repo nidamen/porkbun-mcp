@@ -7,7 +7,7 @@ An MCP server that lets any MCP client manage Porkbun domains, DNS records, name
 The server runs over **stdio** via npx. Nothing to install globally.
 
 ```bash
-npx -y github:<your-handle>/porkbun-mcp
+npx -y github:nidamen/porkbun-mcp
 ```
 
 ## MCP Client Config
@@ -19,7 +19,7 @@ Add this block to your MCP client's server list (Claude Desktop, Cursor, Cline, 
   "mcpServers": {
     "porkbun": {
       "command": "npx",
-      "args": ["-y", "github:<your-handle>/porkbun-mcp"],
+      "args": ["-y", "github:nidamen/porkbun-mcp"],
       "env": {
         "PORKBUN_API_KEY": "<your-api-key>",
         "PORKBUN_API_SECRET": "<your-secret-api-key>"
@@ -33,25 +33,41 @@ Generate your API key and secret at https://porkbun.com/account/api . Each Porkb
 
 ## Credentials
 
-The server resolves credentials in this order:
+The server resolves each secret in this order:
 
 1. **Environment variables** (works on all platforms):
    - `PORKBUN_API_KEY`
    - `PORKBUN_API_SECRET`
-2. **macOS Keychain** (fallback when env vars are absent, darwin only):
+2. **macOS Keychain** (fallback when the env vars are absent, darwin only):
    ```bash
    security add-generic-password -U -a "$USER" -s porkbun-api-key    -w '<api-key>'
    security add-generic-password -U -a "$USER" -s porkbun-api-secret -w '<secret-api-key>'
    ```
-   The Keychain account defaults to the current OS username. Override it with `PORKBUN_KEYCHAIN_ACCOUNT` if your keychain uses a different account name.
+
+### Keychain convention (turnkey, nothing hardcoded)
+
+The Keychain lookup is identical for everyone, with no per-user editing:
+
+- **Service names** are fixed: `porkbun-api-key` and `porkbun-api-secret`.
+- **Account** is your current OS username, read at runtime via `os.userInfo().username`
+  (it is *never* hardcoded to any specific person). So the `security add-generic-password -a "$USER" ...`
+  commands above just work.
+- If your Keychain uses a different account name, set `PORKBUN_KEYCHAIN_ACCOUNT` to override it.
 
 Credentials are POSTed in the JSON body of every request (that is how the Porkbun API authenticates). They are never logged, printed, or echoed in error messages.
 
-## API Access toggle (important)
+## Enable Porkbun per-domain API Access (important)
 
-Porkbun gates **DNS and per-domain operations behind a per-domain "API Access" toggle**. `ping`, `get_pricing`, and `check_domain` work without it, but `list_dns_records`, `update_nameservers`, URL forwarding, etc. will return `Domain is not opted in to API access` until you enable it.
+Porkbun gates **DNS and most per-domain operations behind a per-domain "API Access" toggle**. `ping`, `get_pricing`, and `check_domain` work without it, but `list_dns_records`, `update_nameservers`, URL forwarding, etc. return `Domain is not opted in to API access` until you turn it on.
 
-Enable API access globally or per-domain at https://porkbun.com/account/api (or in each domain's detail panel). The server surfaces this exact error so you know to flip the toggle.
+To enable it:
+
+1. Sign in at https://porkbun.com/ and open your domains list.
+2. Open the domain's **Details** panel.
+3. Flip **API Access** to **ON** for that domain. (Manage your keys and overall access at https://porkbun.com/account/api .)
+4. Repeat for each domain you want the server to manage.
+
+The server surfaces Porkbun's exact `Domain is not opted in to API access` message so you know precisely which toggle to flip.
 
 ## Tool Reference
 
@@ -145,7 +161,7 @@ check_domain { domain: "my-new-idea.dev" }
 
 ## Local smoke test
 
-`npm run smoke` runs a live, read-only check against the real API (`ping` + `dns/retrieve` for a configured domain), reading credentials from the Keychain. It never prints credentials and clearly reports if a domain's API Access toggle is still off.
+`npm run smoke` runs a live, read-only check against the real API (`ping` + `dns/retrieve` for the domain set in `scripts/smoke.ts`, `example.com` by default; change it to one of your own domains), reading credentials from the Keychain. It never prints credentials and clearly reports if a domain's API Access toggle is still off.
 
 ## Limitations
 
