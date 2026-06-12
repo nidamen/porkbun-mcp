@@ -24,6 +24,7 @@ const KEYCHAIN_SERVICES: Record<PorkbunSecretName, string> = {
   key: "porkbun-api-key",
   secret: "porkbun-api-secret",
 };
+const KEYCHAIN_SECRET_FALLBACK = "porkbun-secret-api-key";
 
 const ENV_NAMES: Record<PorkbunSecretName, string> = {
   key: "PORKBUN_API_KEY",
@@ -48,7 +49,18 @@ export async function readPorkbunSecret(name: PorkbunSecretName): Promise<string
         .trim();
       if (value) return value;
     } catch {
-      // Fall through to setup guidance below.
+      if (name === "secret") {
+        try {
+          const alt = execFileSync(
+            "security",
+            ["find-generic-password", "-a", KEYCHAIN_ACCOUNT, "-s", KEYCHAIN_SECRET_FALLBACK, "-w"],
+            { stdio: ["ignore", "pipe", "ignore"] },
+          )
+            .toString()
+            .trim();
+          if (alt) return alt;
+        } catch { /* fall through */ }
+      }
     }
   }
 
