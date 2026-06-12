@@ -22,9 +22,9 @@ const DEFAULT_BASE_URL = process.env.PORKBUN_BASE_URL || "https://api.porkbun.co
 
 const KEYCHAIN_SERVICES: Record<PorkbunSecretName, string> = {
   key: "porkbun-api-key",
-  secret: "porkbun-api-secret",
+  secret: "porkbun-secret-api-key",
 };
-const KEYCHAIN_SECRET_FALLBACK = "porkbun-secret-api-key";
+const KEYCHAIN_SECRET_FALLBACK = "porkbun-api-secret";
 
 const ENV_NAMES: Record<PorkbunSecretName, string> = {
   key: "PORKBUN_API_KEY",
